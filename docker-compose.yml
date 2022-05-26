@@ -1,0 +1,9 @@
+version: "3.9"
+
+services:
+  wrf:
+    build:
+      context: .
+      dockerfile: WRF/Dockerfile
+    container_name: 'uniman-emep-wrf'
+
