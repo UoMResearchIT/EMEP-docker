@@ -6,4 +6,9 @@ services:
       context: .
       dockerfile: WRF/Dockerfile
     container_name: 'uniman-emep-wrf'
+  emep:
+    build:
+      context: .
+      dockerfile: EMEP/Dockerfile
+    container_name: 'uniman-emep'
 
