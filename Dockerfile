@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.4.2
 
-FROM wrf_intermediate:latest
+FROM oliverwoolland/wrf_intermediate:latest
 
 RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y \
                                                       python3
