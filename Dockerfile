@@ -29,6 +29,8 @@ EOF_CODE
 
 WORKDIR $EMEP_SOURCES/emep-ctm-$EMEP_VERSION
 
+RUN sed -i 's/(a,i,a,3i3,50f8.2)/(a,i3,a,3i3,50f8.2)/g' EmisGet_mod.f90
+
 RUN <<EOF_COMPILE
 
 cat <<EOF_MAKEFILE > Makefile.docker
@@ -36,13 +38,12 @@ PROG =	emepctm
 ###################################################
 include Makefile.SRCS
 ###################################################
-LIBS = -lnetcdf -lnetcdff
-INCL = $(nc-config --fflags)
-LLIB = $(nc-config --flibs)
+LIBS = -lnetcdff -lnetcdf
+INCL = \$(shell nf-config --fflags)
+LLIB = \$(shell nf-config --flibs)
 F90 = mpif90
-F90FLAGS = -ffree-line-length-none -fdefault-real-8 -fdefault-double-8 -O2
-###################################################
 
+F90FLAGS = -ffree-line-length-none -fdefault-real-8 -O3
 LDFLAGS = \$(F90FLAGS) \$(LLIB) -o \$(PROG) \$(FOBJ) \$(INCL) \$(LIBS)
 
 
@@ -51,14 +52,13 @@ LDFLAGS = \$(F90FLAGS) \$(LLIB) -o \$(PROG) \$(FOBJ) \$(INCL) \$(LIBS)
 .f90.o:
 	\$(F90) \$(F90FLAGS) \$(INCL) -c \$<
 
-
 all:  \$(PROG)
 
 # Include the dependency-list (created by makedepf90)
 include dependencies
 
 \$(PROG): \$(FOBJ)
-	 \$(F90) \$(LDFLAGS)
+	  \$(F90) \$(LDFLAGS)
 #
 
 clean: diskclean
@@ -69,6 +69,7 @@ diskclean:
 ##########################################################
 EOF_MAKEFILE
 
+cat Makefile.docker 
 make -f Makefile.docker all
 
 EOF_COMPILE
