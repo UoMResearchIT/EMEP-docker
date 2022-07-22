@@ -30,14 +30,15 @@ EOF_CODE
 WORKDIR $EMEP_SOURCES/emep-ctm-$EMEP_VERSION
 
 ###############################################################################
-## Edit source code to compily with gfortran expectations for specified width formatting
-
-RUN sed -i 's/(a,i,a,3i3,50f8.2)/(a,i3,a,3i3,50f8.2)/g' EmisGet_mod.f90
-
-###############################################################################
 ## Compile EMEP using edited makefile
 
 RUN <<EOF_COMPILE
+
+## Edit source code to compily with gfortran expectations for specified width formatting
+
+sed -i 's/(a,i,a,3i3,50f8.2)/(a,i3,a,3i3,50f8.2)/g' EmisGet_mod.f90
+
+## << Create makefile
 
 cat <<EOF_MAKEFILE > Makefile.docker
 PROG =	emepctm
@@ -60,7 +61,6 @@ LDFLAGS = \$(F90FLAGS) \$(LLIB) -o \$(PROG) \$(FOBJ) \$(INCL) \$(LIBS)
 
 all:  \$(PROG)
 
-# Include the dependency-list (created by makedepf90)
 include dependencies
 
 \$(PROG): \$(FOBJ)
@@ -70,6 +70,8 @@ clean: diskclean
 
 diskclean:
 	rm -f \$(PROG) *.o *.mod
+
+## >> Finish creating makefile
 
 ##########################################################
 EOF_MAKEFILE
