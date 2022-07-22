@@ -3,7 +3,7 @@
 FROM oliverwoolland/wrf_intermediate:latest
 
 RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y \
-                                                      python3
+                                                      python3 
 
 ###############################################################################
 ## Set directory variables
@@ -13,7 +13,7 @@ ARG EMEP_SOURCES=/EMEP-SOURCES
 WORKDIR $EMEP_SOURCES
 
 ###############################################################################
-## Install EMEP
+## Download catalog tool and get source code
 
 ARG TARGET_URL=https://raw.githubusercontent.com/metno/emep-ctm/tools/catalog.py
 ARG EMEP_VERSION=rv4_45
@@ -29,21 +29,27 @@ EOF_CODE
 
 WORKDIR $EMEP_SOURCES/emep-ctm-$EMEP_VERSION
 
+###############################################################################
+## Edit source code to compily with gfortran expectations for specified width formatting
+
 RUN sed -i 's/(a,i,a,3i3,50f8.2)/(a,i3,a,3i3,50f8.2)/g' EmisGet_mod.f90
+
+###############################################################################
+## Compile EMEP using edited makefile
 
 RUN <<EOF_COMPILE
 
 cat <<EOF_MAKEFILE > Makefile.docker
 PROG =	emepctm
-###################################################
+
 include Makefile.SRCS
-###################################################
+
 LIBS = -lnetcdff -lnetcdf
-INCL = \$(shell nf-config --fflags)
-LLIB = \$(shell nf-config --flibs)
+INCL = \$(nf-config --fflags)
+LLIB = \$(nf-config --flibs)
 F90 = mpif90
 
-F90FLAGS = -ffree-line-length-none -fdefault-real-8 -O3
+F90FLAGS = -ffree-line-length-none -fdefault-real-8 -O2
 LDFLAGS = \$(F90FLAGS) \$(LLIB) -o \$(PROG) \$(FOBJ) \$(INCL) \$(LIBS)
 
 
@@ -59,7 +65,6 @@ include dependencies
 
 \$(PROG): \$(FOBJ)
 	  \$(F90) \$(LDFLAGS)
-#
 
 clean: diskclean
 
@@ -69,7 +74,6 @@ diskclean:
 ##########################################################
 EOF_MAKEFILE
 
-cat Makefile.docker 
 make -f Makefile.docker all
 
 EOF_COMPILE
