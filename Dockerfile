@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.4.2
 
-FROM oliverwoolland/wrf_intermediate:latest
+FROM ghcr.io/uomresearchit/wrf-libraries:latest
 
 RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y \
                                                       python3 
@@ -79,3 +79,7 @@ EOF_MAKEFILE
 make -f Makefile.docker all
 
 EOF_COMPILE
+
+LABEL version.emep=rv4_45
+LABEL org.opencontainers.image.description="EMEP Chemistry Transport Model"
+LABEL org.opencontainers.image.source="https://github.com/UoMResearchIT/EMEP-docker"
