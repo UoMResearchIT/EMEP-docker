@@ -80,6 +80,8 @@ rm -rf /EMEP-SOURCES
 
 EOF_COMPILE
 
+WORKDIR /
+
 LABEL version.emep=rv4_45
 LABEL org.opencontainers.image.description="EMEP Chemistry Transport Model"
 LABEL org.opencontainers.image.source="https://github.com/UoMResearchIT/EMEP-docker"
