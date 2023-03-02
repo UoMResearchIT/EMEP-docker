@@ -66,17 +66,17 @@ include dependencies
 \$(PROG): \$(FOBJ)
 	  \$(F90) \$(LDFLAGS)
 
-clean: diskclean
-
-diskclean:
-	rm -f \$(PROG) *.o *.mod
-
 ## >> Finish creating makefile
 
 ##########################################################
 EOF_MAKEFILE
 
 make -f Makefile.docker all
+
+# Move executable, and delete install directory
+mv emepctm /usr/local/bin/
+cd /
+rm -rf /EMEP-SOURCES
 
 EOF_COMPILE
 
