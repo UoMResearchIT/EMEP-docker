@@ -40,7 +40,7 @@ released under the [GNU General Public License v3](http://www.gnu.org/copyleft/g
 ### Docker scripts
 
 The docker build scripts have been developed by the [Research IT](https://research-it.manchester.ac.uk/) 
-at the [University of Manchester](https://www.manchester.ac.uk/).
+department at the [University of Manchester](https://www.manchester.ac.uk/).
 
 Copyright 2023 [University of Manchester, UK](https://www.manchester.ac.uk/).
 
